@@ -1,3 +1,4 @@
+
 const video = document.getElementById('webcam');
 const liveView = document.getElementById('liveView');
 const demosSection = document.getElementById('demos');
@@ -20,10 +21,17 @@ if (getUserMediaSupported()) {
 }
 
 
-
 // Enable the live webcam view and start classification.
 function enableCam(event) {
+  // Only continue if the COCO-SSD has finished loading.
+  if (!model) {
+    return;
+  }
   
+  // Hide the button once clicked.
+  event.target.classList.add('removed');  
+  
+  // getUsermedia parameters to force video but not audio.
   const constraints = {
     video: true
   };
@@ -33,7 +41,6 @@ function enableCam(event) {
     video.srcObject = stream;
     video.addEventListener('loadeddata', predictWebcam);
   });
-
 }
 
 var model = true;
@@ -44,24 +51,27 @@ var model = true;
   demosSection.classList.remove('invisible');
 }*/
 
-cocoSsd.load().then(function (loadedModel) {
+/*function loadModel (loadedModel) {
   model = loadedModel;
 demosSection.classList.remove('invisible');
+};*/
+models.load('./model_web').then(function (loadedModel) {
+  model = loadedModel;
+  // Show demo section now model is ready to use.
+  demosSection.classList.remove('invisible');
 });
 
-
-async function loadModel (){
-
+/*async function loadModel () {
+  model = await models.load('./model_web')
   
-}
+}*/
 
 var children = [];
 
-async function predictWebcam() {
-  const mymodel = await models.load('./model_web')
+function predictWebcam() {
 
   // Now let's start classifying a frame in the stream.
-  mymodel.detect(video).then(function (predictions) {
+    model.detect(video).then(function (predictions) {
     // Remove any highlighting we did previous frame.
     for (let i = 0; i < children.length; i++) {
       liveView.removeChild(children[i]);
