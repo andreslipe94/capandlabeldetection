@@ -45,16 +45,6 @@ function enableCam(event) {
 
 var model = true;
 
-/*if (cocoSsd.load()) {
-  var loadedModel
-  model = loadedModel;
-  demosSection.classList.remove('invisible');
-}*/
-
-/*function loadModel (loadedModel) {
-  model = loadedModel;
-demosSection.classList.remove('invisible');
-};*/
 models.load('./model_web').then(function (loadedModel) {
   model = loadedModel;
   // Show demo section now model is ready to use.
@@ -86,7 +76,7 @@ function predictWebcam() {
         const p = document.createElement('p');
         p.innerText = predictions[n].class  + ' - with ' 
             + Math.round(parseFloat(predictions[n].score) * 100) 
-            + '% confidence.';
+            + '% reconocimiento.';
         p.style = 'margin-left: ' + predictions[n].bbox[0] + 'px; margin-top: '
             + (predictions[n].bbox[1] - 10) + 'px; width: ' 
             + (predictions[n].bbox[2] - 10) + 'px; top: 0; left: 0;';
