@@ -5,38 +5,37 @@ const demosSection = document.getElementById('demos');
 const enableWebcamButton = document.getElementById('webcamButton');
 
 
-// Check if webcam access is supported.
+// Chequear la cámara si está habilitada
 function getUserMediaSupported() {
   return !!(navigator.mediaDevices &&
     navigator.mediaDevices.getUserMedia);
 }
 
-// If webcam supported, add event listener to button for when user
-// wants to activate it to call enableCam function which we will 
-// define in the next step.
+// Si la cámara es soportada, se añade un evento que el usuario activa cuando
+// le da click en 'Habilitar Cámara' ésto lo que hace es llamar la función enableCam
 if (getUserMediaSupported()) {
   enableWebcamButton.addEventListener('click', enableCam);
 } else {
-  console.warn('getUserMedia() is not supported by your browser');
+  console.warn('getUserMedia() no está soportado por tu navegador');
 }
 
 
-// Enable the live webcam view and start classification.
+// Habilita la vista de cámara web y empieza la detección.
 function enableCam(event) {
-  // Only continue if the COCO-SSD has finished loading.
+  // Sólo continua si el modelo está cargado.
   if (!model) {
     return;
   }
   
-  // Hide the button once clicked.
+  // Oculta el botón cuando se presiona
   event.target.classList.add('removed');  
   
-  // getUsermedia parameters to force video but not audio.
+  // Obtiene los datos del usuario, sólo habilitado video pero no audio
   const constraints = {
     video: true
   };
 
-  // Activate the webcam stream.
+  // Activa la webcam.
   navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
     video.srcObject = stream;
     video.addEventListener('loadeddata', predictWebcam);
@@ -47,7 +46,7 @@ var model = true;
 
 models.load('./model_web').then(function (loadedModel) {
   model = loadedModel;
-  // Show demo section now model is ready to use.
+  // muestra la sección demo cuando el modelo está lito
   demosSection.classList.remove('invisible');
 });
 
@@ -60,18 +59,17 @@ var children = [];
 
 function predictWebcam() {
 
-  // Now let's start classifying a frame in the stream.
+  // Aqui se comienza a detectar un fotograma en la secuencia
     model.detect(video).then(function (predictions) {
-    // Remove any highlighting we did previous frame.
+    // Elimina cualquier rotulado que hicimos en el marco anterior
     for (let i = 0; i < children.length; i++) {
       liveView.removeChild(children[i]);
     }
     children.splice(0);
-    
-    // Now lets loop through predictions and draw them to the live view if
-    // they have a high confidence score.
+    //ahora recorramos las predicciones y dibujémoslas en la vista en vivo si
+    // tienen una alta puntuación de reconocimiento
     for (let n = 0; n < predictions.length; n++) {
-      // If we are over 66% sure we are sure we classified it right, draw it!
+      // Si tenemos más del 66% de reconocimiento, estamos seguros de haberlo clasificado correctamente, y se dibuja
       if (predictions[n].score > 0.66) {
         const p = document.createElement('p');
         p.innerText = predictions[n].class  + ' - with ' 
@@ -95,7 +93,7 @@ function predictWebcam() {
       }
     }
     
-    // Call this function again to keep predicting when the browser is ready.
+    // se Vuelve a llamar a esta función para seguir prediciendo cuando el navegador ya ha cargado
     window.requestAnimationFrame(predictWebcam);
   });
 }
