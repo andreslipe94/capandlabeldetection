@@ -1,12 +1,12 @@
 body {
   font-family: helvetica, arial, sans-serif;
   margin: 2em;
-  color: #3D3D3D;
+  color: #3d3d3d;
 }
 
 h1 {
   font-style: italic;
-  color: #FF6F00;
+  color: #008f39;
 }
 
 video {
@@ -37,9 +37,9 @@ section {
 .camView p {
   position: absolute;
   padding: 5px;
-  background-color: rgba(255, 111, 0, 0.85);
+  background-color: #00ff00;
   color: #FFF;
-  border: 1px dashed rgba(255, 255, 255, 0.7);
+  border: 1px dashed #ffffff;
   z-index: 2;
   font-size: 12px;
 }
